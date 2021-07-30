@@ -35,17 +35,27 @@ namespace Retrieve_from_AccessDB
             {
                 conn = new OleDbConnection(ConnStr);
                 conn.Open();
-                q = QueryBox.Text;
+                q = "select * from " + QueryBox.Text + ";";
                 OleDbCommand cmd = new OleDbCommand(q, conn);
                 String str = "";
                 using (OleDbDataReader reader = cmd.ExecuteReader())
                 {
+                    int count = reader.FieldCount;
                     while (reader.Read())
                     {
-                        str = str + reader["ID"].ToString() + "\r\n";
+                        for (int i = 0; i < count; i++)
+                        {
+                            str = str + reader.GetValue(i) + "\t";
+                        }
+                        ResultBox.Text += str + "\r\n";
+                        str = "";
+                        QueryBox.Clear();
                     }
-                    MessageBox.Show(str);
                 }
+                    //ResultBox.Text += str + "\r\n";
+                    //str = "";
+                    //QueryBox.Clear();
+
                 conn.Close();
             }
             catch (Exception ex)
